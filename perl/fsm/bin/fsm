@@ -2,6 +2,8 @@
 
 use strict;
 use warnings;
+use v5.10;
+use experimental qw( switch );
 
 # See https://stackoverflow.com/questions/12397592
 
@@ -12,18 +14,36 @@ my $state;
 
 $state = 0;
 
-@input = ("a", "b", "c");
+@input = ("a", "a", "b", "c");
 
 %state_table =
   (
    0 => sub {
-print shift;
+     given (shift) {
+         when(/a/) {
+             say $_;
+             return 1;
+         }
+
+       default {
+           return 0;
+       };
+     }
    },
-    1 => sub {
-print shift;
-    },
-    );
+   1 => sub {
+       given (shift) {
+           when(/b/) {
+               say $_;
+               return 0;
+           }
+
+           default {
+               return 1;
+           }
+       }
+   },
+  );
 
 while (my $token = shift @input) {
-  $state = $state_table{$state}->($token);
+    $state = $state_table{$state}->($token);
 }
