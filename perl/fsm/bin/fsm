@@ -1,0 +1,29 @@
+#!/usr/bin/env perl
+
+use strict;
+use warnings;
+
+# See https://stackoverflow.com/questions/12397592
+
+my @input;
+my %state_table;
+my $nextstate;
+my $state;
+
+$state = 0;
+
+@input = ("a", "b", "c");
+
+%state_table =
+  (
+   0 => sub {
+print shift;
+   },
+    1 => sub {
+print shift;
+    },
+    );
+
+while (my $token = shift @input) {
+  $state = $state_table{$state}->($token);
+}
