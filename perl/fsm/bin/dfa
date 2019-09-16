@@ -22,25 +22,27 @@ $transition_table[stItem] = [sub {say "Greetings";}, undef];
 $transition_table[stSubItem] = [undef,undef];
 $transition_table[stEnd] = [sub {say "Bye";}, undef];
 
-my $state_table =
+my @state_table = ();
+
+$state_table[stStart] =
   [
-   [
-     [1, sub{$ArbitraryFlag}, sub{say "Am Here (in state 1)"}],
-   ],
+     [stItem, sub{$ArbitraryFlag}, sub{say "Am Here (in state 1)"}],
+   ];
 
-   [
-     [2, sub{$ArbitraryFlag}, ],
-   ],
-
-   [
-     [1, sub{$ArbitraryFlag}, ],
-     [3, undef, sub {say "Am Here (in state 3)";}],
-   ],
+$state_table[stItem] =
+  [
+   [stSubItem, sub{$ArbitraryFlag}, ],
   ];
 
-my $F = new DFA::Simple(\@transition_table, $state_table);
+$state_table[stSubItem] =
+  [
+   [1, sub{$ArbitraryFlag}, ],
+   [3, undef, sub {say "Am Here (in state 3)";}],
+  ];
 
-$F -> State(0);
+my $F = new DFA::Simple(\@transition_table, \@state_table);
+
+$F -> State(stStart);
 
 $ArbitraryFlag=1;
 
@@ -52,7 +54,7 @@ $ArbitraryFlag = 0;
 
 $F -> Check_For_NextState();
 
-$F -> State(0);
+$F -> State(stStart);
 
 carp "Failure also causes us to go to a new state.";
 
