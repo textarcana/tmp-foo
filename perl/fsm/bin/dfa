@@ -2,22 +2,27 @@
 
 use strict;
 use warnings;
+use Carp;
 use v5.10;
 use DFA::Simple;
 
-my $Transitions =[
-     [sub {say "Intro";}, undef],
-
-     [sub {say "Greetings";}, undef],
-
-     [undef,undef],
-
-     [sub {say "Bye";}, undef],
-];
-
 my $ArbitraryFlag=0;
 
-my $States =
+use constant {
+    stStart     => 0,
+    stItem      => 1,
+    stSubItem   => 2,
+    stEnd       => 3,
+};
+
+my @transition_table = ();
+
+$transition_table[stStart] = [sub {say "Intro";}, undef];
+$transition_table[stItem] = [sub {say "Greetings";}, undef];
+$transition_table[stSubItem] = [undef,undef];
+$transition_table[stEnd] = [sub {say "Bye";}, undef];
+
+my $state_table =
   [
    [
      [1, sub{$ArbitraryFlag}, sub{say "Am Here (in state 1)"}],
@@ -33,28 +38,24 @@ my $States =
    ],
   ];
 
-my $F=new DFA::Simple $Transitions, $States;
+my $F = new DFA::Simple(\@transition_table, $state_table);
 
-$F->State(0);
-
-say "I will force us to silently go to state 1, then 2, then 3:";
+$F -> State(0);
 
 $ArbitraryFlag=1;
 
-$F->Check_For_NextState();
+$F -> Check_For_NextState();
 
-$F->Check_For_NextState();
+$F -> Check_For_NextState();
 
-$ArbitraryFlag=0;
+$ArbitraryFlag = 0;
 
-$F->Check_For_NextState();
+$F -> Check_For_NextState();
 
-say "Resetting:";
+$F -> State(0);
 
-$F->State(0);
+carp "Failure also causes us to go to a new state.";
 
-say "I will force us to fail to go to a new state:";
+$ArbitraryFlag = 0;
 
-$ArbitraryFlag=0;
-
-$F->Check_For_NextState();
+$F -> Check_For_NextState();
