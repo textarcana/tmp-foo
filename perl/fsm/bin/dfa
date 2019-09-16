@@ -1,0 +1,60 @@
+#!/usr/bin/env perl
+
+use strict;
+use warnings;
+use v5.10;
+use DFA::Simple;
+
+my $Transitions =[
+     [sub {say "Intro";}, undef],
+
+     [sub {say "Greetings";}, undef],
+
+     [undef,undef],
+
+     [sub {say "Bye";}, undef],
+];
+
+my $ArbitraryFlag=0;
+
+my $States =
+  [
+   [
+     [1, sub{$ArbitraryFlag}, sub{say "Am Here (in state 1)"}],
+   ],
+
+   [
+     [2, sub{$ArbitraryFlag}, ],
+   ],
+
+   [
+     [1, sub{$ArbitraryFlag}, ],
+     [3, undef, sub {say "Am Here (in state 3)";}],
+   ],
+  ];
+
+my $F=new DFA::Simple $Transitions, $States;
+
+$F->State(0);
+
+say "I will force us to silently go to state 1, then 2, then 3:";
+
+$ArbitraryFlag=1;
+
+$F->Check_For_NextState();
+
+$F->Check_For_NextState();
+
+$ArbitraryFlag=0;
+
+$F->Check_For_NextState();
+
+say "Resetting:";
+
+$F->State(0);
+
+say "I will force us to fail to go to a new state:";
+
+$ArbitraryFlag=0;
+
+$F->Check_For_NextState();
