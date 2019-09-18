@@ -13,32 +13,42 @@ print_one_line(){
     perl -lwe 'print $ENV{"line"}'
 }
 
-if_the_line_is_the_start_of_a_block(){
-    perl -lwe '$ENV{"line"} =~ /^Ohkai/ and exit 0 or exit 1'
+if_line_matches_regex(){
+    regex_to_match="$1"
+
+    perl -lwe '$ENV{"line"} =~ /$ENV{"regex_to_match"}/ and exit 0 or exit 1'
 }
 
-if_the_line_is_the_end_of_a_block(){
-    perl -lwe '$ENV{"line"} =~ /^Popo/ and exit 0 or exit 1'
+the_line_is_the_start_of_a_block(){
+    block_start_regex='^Ohkai.*'
+
+    if_line_matches_regex $block_start_regex
+}
+
+the_line_is_the_end_of_a_block(){
+    block_end_regex='^Tier.*'
+
+    if_line_matches_regex $block_end_regex
 }
 
 log here begins the DFA output:
 
 start_function(){
     echo "initial state"
-    if_the_line_is_the_start_of_a_block \
-        && state="next"
 
-    true
+    if the_line_is_the_start_of_a_block
+    then
+        state="next"
+    fi
 }
 
 next_function(){
-    echo "next state"
-    print_one_line
-
-    if_the_line_is_the_end_of_a_block \
-        && state="done"
-
-    true
+    if the_line_is_the_end_of_a_block
+    then
+        state="done"
+    else
+        print_one_line
+    fi
 }
 
 done_function(){
@@ -66,3 +76,5 @@ while IFS= read -r line
 do
     now_the_fsm_has_advanced_to_the_next_state
 done < "$1"
+
+log here ends the DFA.
