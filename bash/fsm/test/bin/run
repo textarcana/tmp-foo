@@ -17,3 +17,7 @@ sh vendor/read_lines_from_file.sh test/inputs/basic.log | tee test/opt/2.txt
 log diff of outputs:
 
 diff -u test/opt/1.txt test/opt/2.txt
+
+log done.
+
+cowsay done at $(date +%H:%m:%S)
