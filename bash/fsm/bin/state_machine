@@ -13,15 +13,19 @@ print_one_line(){
     perl -lwe 'print $ENV{"line"}'
 }
 
-if_the_line_is_the_start_of_a_table(){
+if_the_line_is_the_start_of_a_block(){
     perl -lwe '$ENV{"line"} =~ /^Ohkai/ and exit 0 or exit 1'
+}
+
+if_the_line_is_the_end_of_a_block(){
+    perl -lwe '$ENV{"line"} =~ /^Popo/ and exit 0 or exit 1'
 }
 
 log here begins the DFA output:
 
 start_function(){
     echo "initial state"
-    if_the_line_is_the_start_of_a_table \
+    if_the_line_is_the_start_of_a_block \
         && state="next"
 
     true
@@ -30,12 +34,15 @@ start_function(){
 next_function(){
     echo "next state"
     print_one_line
-    state="done"
+
+    if_the_line_is_the_end_of_a_block \
+        && state="done"
+
+    true
 }
 
 done_function(){
     echo "done"
-    print_one_line
     state="start"
 }
 
