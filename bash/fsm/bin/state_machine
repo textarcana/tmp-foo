@@ -9,52 +9,33 @@ now_the_log_level_is_debug
 # Shell Script State machine from
 # http://blog.sarah-happy.ca/2010/12/shell-script-state-machine.html
 
-state="start"
-
-# Declare an Associative Array, a.k.a Hash Table, a.k.a. A bash Hash!
-#
-# This requires bash 4
-
-declare -A now_i_will
-
 print_one_line(){
-    echo "I have printed: $1"
+    perl -lwe 'print $ENV{"line"}'
 }
-
-now_i_will=(
-    [read_one_line]=print_one_line
-    [moo]=cow
-    [woof]=dog
-)
-
-keys now_i_will
-
-values now_i_will
-
-log "Now to invoke the function by its name, from inside of the hash.:"
-
-action_key="read_one_line"
-
-echo $(eval "${now_i_will[$action_key]} foo")
 
 log here begins the DFA output:
 
 start_function(){
-      echo "initial state"
-      echo $(eval "${now_i_will[$action_key]} \\$line")
-      state="next"
+    echo "initial state"
+    print_one_line
+    state="next"
 }
 
 next_function(){
-      echo "next state"
-      echo $(eval "${now_i_will[$action_key]} \\$line")
-      state="done"
+    echo "next state"
+    print_one_line
+    state="done"
 }
 
 done_function(){
     echo "done"
-    echo $(eval "${now_i_will[$action_key]} \\$line")
+    print_one_line
+    state="start"
 }
+
+# Declare an Associative Array, a.k.a Hash Table, a.k.a. A bash Hash!
+#
+# This requires bash 4
 
 declare -A states=(
     [start]=start_function
@@ -62,6 +43,13 @@ declare -A states=(
     [done]=done_function
 )
 
-while IFS= read -r line; do
-    $(eval "echo ${states[start]}")
+now_the_fsm_has_advanced_to_the_next_state(){
+    $(eval "echo ${states[$state]}")
+}
+
+state="start"
+
+while IFS= read -r line
+do
+    now_the_fsm_has_advanced_to_the_next_state
 done < "$1"
