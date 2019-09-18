@@ -4,4 +4,4 @@ set -Eaeuo pipefail -o functrace
 
 # Finite State Machine in bash
 
-perl -lwpe '' "$1"
+perl -lwpe '' $1

@@ -6,6 +6,10 @@ source "$HOME/.stdlib.sh"
 
 now_the_log_level_is_debug
 
+log state machine output:
+
+bin/state_machine test/inputs/basic.log
+
 log perl version:
 
 bin/fsm test/inputs/basic.log | tee test/opt/1.txt;
