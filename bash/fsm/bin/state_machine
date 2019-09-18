@@ -42,20 +42,23 @@ log here begins the DFA output:
 while IFS= read -r line; do
   case "$state" in
   "start")
-    echo "initial state"
-    state="next"
-    ;;
+      echo "initial state"
+      echo $(eval "${now_i_will[$action_key]} \\$line")
+      state="next"
+      ;;
   "next")
-    echo "next state"
-    state="done"
-    ;;
+      echo "next state"
+      echo $(eval "${now_i_will[$action_key]} \\$line")
+      state="done"
+      ;;
   "done")
-    echo "done"
-    break
-    ;;
+      echo "done"
+      echo $(eval "${now_i_will[$action_key]} \\$line")
+      break
+      ;;
   *)
-    echo "invalid state \"$state\""
-    break
-    ;;
+      echo "invalid state \"$state\""
+      break
+      ;;
   esac
 done < "$1"
