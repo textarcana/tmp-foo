@@ -39,26 +39,29 @@ echo $(eval "${now_i_will[$action_key]} foo")
 
 log here begins the DFA output:
 
-while IFS= read -r line; do
-  case "$state" in
-  "start")
+start_function(){
       echo "initial state"
       echo $(eval "${now_i_will[$action_key]} \\$line")
       state="next"
-      ;;
-  "next")
+}
+
+next_function(){
       echo "next state"
       echo $(eval "${now_i_will[$action_key]} \\$line")
       state="done"
-      ;;
-  "done")
-      echo "done"
-      echo $(eval "${now_i_will[$action_key]} \\$line")
-      break
-      ;;
-  *)
-      echo "invalid state \"$state\""
-      break
-      ;;
-  esac
+}
+
+done_function(){
+    echo "done"
+    echo $(eval "${now_i_will[$action_key]} \\$line")
+}
+
+declare -A states=(
+    [start]=start_function
+    [next]=next_function
+    [done]=done_function
+)
+
+while IFS= read -r line; do
+    $(eval "echo ${states[start]}")
 done < "$1"
