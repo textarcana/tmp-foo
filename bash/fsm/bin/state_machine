@@ -2,10 +2,42 @@
 
 set -Eaeuo pipefail -o functrace
 
+source "$HOME/.stdlib.sh"
+
+now_the_log_level_is_debug
+
 # Shell Script State machine from
 # http://blog.sarah-happy.ca/2010/12/shell-script-state-machine.html
 
 state="start"
+
+# Declare an Associative Array, a.k.a Hash Table, a.k.a. A bash Hash!
+#
+# This requires bash 4
+
+declare -A now_i_will
+
+print_one_line(){
+    echo "I have printed: $1"
+}
+
+now_i_will=(
+    [read_one_line]=print_one_line
+    [moo]=cow
+    [woof]=dog
+)
+
+keys now_i_will
+
+values now_i_will
+
+log "Now to invoke the function by its name, from inside of the hash.:"
+
+action_key="read_one_line"
+
+echo $(eval "${now_i_will[$action_key]} foo")
+
+log here begins the DFA output:
 
 while IFS= read -r line; do
   case "$state" in
