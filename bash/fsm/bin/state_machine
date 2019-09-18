@@ -13,12 +13,18 @@ print_one_line(){
     perl -lwe 'print $ENV{"line"}'
 }
 
+if_the_line_is_the_start_of_a_table(){
+    perl -lwe '$ENV{"line"} =~ /^Ohkai/ and exit 0 or exit 1'
+}
+
 log here begins the DFA output:
 
 start_function(){
     echo "initial state"
-    print_one_line
-    state="next"
+    if_the_line_is_the_start_of_a_table \
+        && state="next"
+
+    true
 }
 
 next_function(){
