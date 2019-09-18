@@ -7,11 +7,6 @@ set -Eaeuo pipefail -o functrace
 # This program reads lines from a file.
 #
 
-end_of_file=0
-while [[ $end_of_file == 0 ]]; do
-  read -r line
-  # the last exit status is the
-  # flag of the end of file
-  end_of_file=$?
-  echo $line
+while IFS= read -r line; do
+    echo "$line"
 done < "$1"
