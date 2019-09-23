@@ -7,6 +7,20 @@ use v5.10;
 
 # Rules Table example.
 
+use Data::Dump qw(dump);
+
 my %rules_table;
 
-use Data::Dump qw(dump);
+$rules_table{foo} = sub{ say "bar"; };
+
+sub main{
+
+  say "Rules Table: " . dump(%rules_table) . "\n";
+
+  say "Result of calling a rule:";
+
+  $rules_table{foo}->();
+
+}
+
+main();
