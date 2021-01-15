@@ -11,7 +11,9 @@ use Data::Dump qw(dump);
 
 my %rules_table;
 
-$rules_table{foo} = sub{ say "bar"; };
+$rules_table{foo} = sub{ say "homer"; };
+
+$rules_table{bar} = sub{ say "marge"; };
 
 sub main{
 
@@ -19,7 +21,7 @@ sub main{
 
   say "Result of calling a rule:";
 
-  $rules_table{foo}->();
+  $rules_table{bar}->();
 
 }
 
