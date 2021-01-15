@@ -1,0 +1,7 @@
+steps-dockerfile:
+  model: iris_tf_pipeline
+  data: transform
+
+location-dockerfile:
+  model: Dockerfile.iris
+  data: Dockerfile.transform
